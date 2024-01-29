@@ -1,6 +1,6 @@
 // sketch.js - purpose and description here
-// Author: Your Name
-// Date:
+// Author: Atal Kakar (some code borrowed from http://www.generative-gestaltung.de/2/sketches/?01_P/P_2_0_01) 
+// Date: 1/22/2023
 
 // Here is how you might set up an OOP p5.js project
 // Note that p5.js looks for a file called sketch.js
@@ -45,23 +45,44 @@ function setup() {
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-    background(220);    
-    // call a method on the instance
-    myInstance.myMethod();
+    background(mouseY/2, 150, mouseX/2);
+    translate(width / 2, height / 2);
 
-    // Put drawings here
-    var centerHorz = canvasContainer.width() / 2 - 125;
-    var centerVert = canvasContainer.height() / 2 - 125;
+
+    fill(mouseX/2, 100, mouseY/2);
+    var circleResolution = int(map(mouseY/2, 0, height, 2, 80));
+    //var radius = (mouseX)/2 - 100- width / 2;
+
+    //Centered the shape
+    var radius = (mouseX)/2 - 100- width/2;
+
+    //if condition so that after a mouseX position of less than 1000
+    //the radius decreases linearly
+    //presents a sphere shape
+    if(mouseX < 1000) {
+        radius = ((mouseX/2) + (1000 - mouseX) - 100) - width/2;
+        //radius = 500;
+    }
+    var angle = TAU / circleResolution;
+
+    strokeWeight(mouseY / 35);
+
+    for (var i = 0; i <= circleResolution*2; i++) {
+    var x = cos(angle * i) * radius;
+    var y = sin(angle * i) * radius;
+
+    //Changed some values so that that changes in radius are continuous across the background.
+    //also creates the illusion that the top of the cone is following the mouse.
+    line((mouseX) - 913, mouseY/1 - +300, x, y, 0);
     fill(234, 31, 81);
-    noStroke();
-    rect(centerHorz, centerVert, 250, 250);
-    fill(255);
-    textStyle(BOLD);
-    textSize(140);
-    text("p5*", centerHorz + 10, centerVert + 200);
+    }
 }
 
 // mousePressed() function is called once after every time a mouse button is pressed
 function mousePressed() {
     // code to run when mouse is pressed
+}
+
+function keyPressed() {
+    if (key == 's' || key == 'S') saveCanvas(gd.timestamp(), 'png');
 }
