@@ -1,67 +1,52 @@
-// sketch.js - purpose and description here
-// Author: Your Name
-// Date:
+let angle = 0;
+let growthSpeed = 0.05;
+let numCubes = 20;
+let cubes = [];
 
-// Here is how you might set up an OOP p5.js project
-// Note that p5.js looks for a file called sketch.js
-
-// Constants - User-servicable parts
-// In a longer project I like to put these in a separate file
-const VALUE1 = 1;
-const VALUE2 = 2;
-
-// Globals
-let myInstance;
-let canvasContainer;
-
-class MyClass {
-    constructor(param1, param2) {
-        this.property1 = param1;
-        this.property2 = param2;
-    }
-
-    myMethod() {
-        // code to run when method is called
-    }
-}
-
-// setup() function is called once when the program starts
 function setup() {
-    // place our canvas, making it fit our container
-    canvasContainer = $("#canvas-container");
-    let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
-    canvas.parent("canvas-container");
-    // resize canvas is the page is resized
-    $(window).resize(function() {
-        console.log("Resizing...");
-        resizeCanvas(canvasContainer.width(), canvasContainer.height());
-    });
-    // create an instance of the class
-    myInstance = new MyClass(VALUE1, VALUE2);
+    createCanvas(1850, 600, WEBGL);
 
-    var centerHorz = windowWidth / 2;
-    var centerVert = windowHeight / 2;
+    //create cubes
+    for (let i = 0; i < numCubes; i++) {
+        cubes.push(new Cube(i * 40 - (numCubes / 2) * 20, 0, 0));
+    }
 }
 
-// draw() function is called repeatedly, it's the main animation loop
 function draw() {
-    background(220);    
-    // call a method on the instance
-    myInstance.myMethod();
+    background(0);
 
-    // Put drawings here
-    var centerHorz = canvasContainer.width() / 2 - 125;
-    var centerVert = canvasContainer.height() / 2 - 125;
-    fill(234, 31, 81);
-    noStroke();
-    rect(centerHorz, centerVert, 250, 250);
-    fill(255);
-    textStyle(BOLD);
-    textSize(140);
-    text("p5*", centerHorz + 10, centerVert + 200);
+    // Change Camera pos based on Mouse Pos
+    let camX = map(mouseX, 0, width, -200, 200);
+    let camY = map(mouseY, 0, height, -200, 200);
+    camera(camX, camY, 500, 0, 0, 0, 0, 1, 0);
+
+    angle += growthSpeed;
+
+    for (let cube of cubes) {
+    cube.update();
+    cube.display();
+  }
 }
 
-// mousePressed() function is called once after every time a mouse button is pressed
-function mousePressed() {
-    // code to run when mouse is pressed
+class Cube {
+    constructor(x, y, z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.height = 20;
+        this.maxHeight = random(100, 300); // A bit of randomness to emulate audio
+    }
+
+    update() {
+    //increase size of cube
+        this.height = sin(angle + this.x * 0.1) * this.maxHeight;
+    }
+
+    display() {
+        push();
+        translate(this.x, this.y, this.z);
+        fill(255, 0, 0);
+        box(20, this.height, 20);
+        pop();
+    }
 }
