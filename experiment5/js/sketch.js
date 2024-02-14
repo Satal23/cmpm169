@@ -1,67 +1,168 @@
-// sketch.js - purpose and description here
-// Author: Your Name
-// Date:
+let voxels = [];
+let angle = 0.01;
+let isMousePressed = false;
 
-// Here is how you might set up an OOP p5.js project
-// Note that p5.js looks for a file called sketch.js
-
-// Constants - User-servicable parts
-// In a longer project I like to put these in a separate file
-const VALUE1 = 1;
-const VALUE2 = 2;
-
-// Globals
-let myInstance;
-let canvasContainer;
-
-class MyClass {
-    constructor(param1, param2) {
-        this.property1 = param1;
-        this.property2 = param2;
-    }
-
-    myMethod() {
-        // code to run when method is called
-    }
-}
-
-// setup() function is called once when the program starts
 function setup() {
-    // place our canvas, making it fit our container
-    canvasContainer = $("#canvas-container");
-    let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
-    canvas.parent("canvas-container");
-    // resize canvas is the page is resized
-    $(window).resize(function() {
-        console.log("Resizing...");
-        resizeCanvas(canvasContainer.width(), canvasContainer.height());
-    });
-    // create an instance of the class
-    myInstance = new MyClass(VALUE1, VALUE2);
+    createCanvas(1850, 600, WEBGL);
 
-    var centerHorz = windowWidth / 2;
-    var centerVert = windowHeight / 2;
+  voxels = [
+    // Ears
+    { x: 6, y: 1, z: -1, color: color(49, 79, 228) },
+    { x: 6, y: 0, z: -1, color: color(49, 79, 228) },
+    { x: 6, y: -1, z: -1, color: color(49, 79, 228) },
+    { x: 5, y: -1, z: -1, color: color(49, 79, 228) },
+    { x: 5, y: 0, z: -1, color: color(0, 0, 0) },
+    { x: 5, y: 1, z: -1, color: color(49, 79, 228) },
+    { x: 5, y: -1, z: -1, color: color(49, 79, 228) },
+    { x: 4, y: -1, z: -1, color: color(49, 79, 228) },
+    { x: 4, y: 0, z: -1, color: color(49, 79, 228) },
+    { x: 4, y: 1, z: -1, color: color(49, 79, 228) },
+    
+    { x: -6, y: 1, z: -1, color: color(49, 79, 228) },
+    { x: -6, y: 0, z: -1, color: color(49, 79, 228) },
+    { x: -6, y: -1, z: -1, color: color(49, 79, 228) },
+    { x: -5, y: -1, z: -1, color: color(49, 79, 228) },
+    { x: -5, y: 0, z: -1, color: color(0, 0, 0) },
+    { x: -5, y: 1, z: -1, color: color(49, 79, 228) },
+    { x: -5, y: -1, z: -1, color: color(49, 79, 228) },
+    { x: -4, y: -1, z: -1, color: color(49, 79, 228) },
+    { x: -4, y: 0, z: -1, color: color(49, 79, 228) },
+    { x: -4, y: 1, z: -1, color: color(49, 79, 228) },
+
+    //Head
+    { x: -3, y: 1, z: 0, color: color(49, 79, 228) },
+    { x: -2, y: 1, z: 0, color: color(49, 79, 228) },
+    { x: -1, y: 1, z: 0, color: color(49, 79, 228) },
+    { x: 0, y: 1, z: 0, color: color(49, 79, 228) },
+    { x: 1, y: 1, z: 0, color: color(49, 79, 228) },
+    { x: 2, y: 1, z: 0, color: color(49, 79, 228) },
+    { x: 3, y: 1, z: 0, color: color(49, 79, 228) },
+    
+    { x: -5, y: 2, z: 0, color: color(49, 79, 228) },
+    { x: -5, y: 3, z: 0, color: color(49, 79, 228) },
+    { x: -5, y: 4, z: 0, color: color(49, 79, 228) },
+    { x: -5, y: 5, z: 0, color: color(49, 79, 228) },
+    { x: -5, y: 6, z: 0, color: color(49, 79, 228) },
+    { x: -4, y: 6, z: 0, color: color(49, 79, 228) },
+    { x: -3, y: 6, z: 0, color: color(49, 79, 228) },
+    { x: -2, y: 6, z: 0, color: color(49, 79, 228) },
+    { x: -2, y: 6, z: 0, color: color(49, 79, 228) },
+    { x: -1, y: 6, z: 1, color: color(255, 255, 255) },
+    { x: 5, y: 2, z: 0, color: color(49, 79, 228) },
+    { x: 5, y: 3, z: 0, color: color(49, 79, 228) },
+    { x: 5, y: 4, z: 0, color: color(49, 79, 228) },
+    { x: 5, y: 5, z: 0, color: color(49, 79, 228) },
+    { x: 5, y: 6, z: 0, color: color(49, 79, 228) },
+    { x: 4, y: 6, z: 0, color: color(49, 79, 228) },
+    { x: 3, y: 6, z: 0, color: color(49, 79, 228) },
+    { x: 2, y: 6, z: 0, color: color(49, 79, 228) },
+    { x: 2, y: 6, z: 0, color: color(49, 79, 228) },
+    { x: 1, y: 6, z: 1, color: color(255, 255, 255) },
+    { x: 0, y: 6, z: 0, color: color(49, 79, 228) },
+    
+    { x: -4, y: 2, z: 0, color: color(49, 79, 228) },
+    { x: -4, y: 3, z: 0, color: color(255,255, 255) },
+    { x: -4, y: 4, z: 0, color: color(49, 79, 228) },
+    { x: -4, y: 5, z: 0, color: color(49, 79, 228) },
+    { x: -4, y: 5, z: 0, color: color(49, 79, 228) },
+    
+    { x: -3, y: 2, z: 0, color: color(49, 79, 228) },
+    { x: -3, y: 3, z: 0, color: color(0, 0, 0) },
+    { x: -3, y: 4, z: 0, color: color(49, 79, 228) },
+    { x: -3, y: 5, z: 0, color: color(49, 79, 228) },
+    { x: -3, y: 5, z: 0, color: color(49, 79, 228) },
+    
+    
+    { x: 4, y: 2, z: 0, color: color(49, 79, 228) },
+    { x: 4, y: 3, z: 0, color: color(255,255, 255) },
+    { x: 4, y: 4, z: 0, color: color(49, 79, 228) },
+    { x: 4, y: 5, z: 0, color: color(49, 79, 228) },
+    { x: 4, y: 5, z: 0, color: color(49, 79, 228) },
+    
+    { x: 3, y: 2, z: 0, color: color(49, 79, 228) },
+    { x: 3, y: 3, z: 0, color: color(0, 0, 0) },
+    { x: 3, y: 4, z: 0, color: color(49, 79, 228) },
+    { x: 3, y: 5, z: 0, color: color(49, 79, 228) },
+    { x: 3, y: 5, z: 0, color: color(49, 79, 228) },
+    
+    { x: 2, y: 2, z: 0, color: color(49, 79, 228) },
+    { x: 2, y: 3, z: 0, color: color(49, 79, 228) },
+    { x: 2, y: 4, z: 0, color: color(49, 79, 228) },
+    { x: 2, y: 5, z: 0, color: color(49, 79, 228) },
+    { x: 2, y: 5, z: 0, color: color(49, 79, 228) },
+    
+    { x: 1, y: 2, z: 0, color: color(49, 79, 228) },
+    { x: 1, y: 3, z: 0, color: color(49, 79, 228) },
+    { x: 1, y: 4, z: 0, color: color(49, 79, 228) },
+    { x: 1, y: 5, z: 1, color: color(255, 255, 255) },
+    
+    { x: 0, y: 2, z: 0, color: color(49, 79, 228) },
+    { x: 0, y: 3, z: 0, color: color(49, 79, 228) },
+    { x: 0, y: 4, z: 0, color: color(49, 79, 228) },
+    { x: 0, y: 5, z: 1, color: color(255, 155, 155) },
+    
+    { x: -1, y: 2, z: 0, color: color(49, 79, 228) },
+    { x: -1, y: 3, z: 0, color: color(49, 79, 228) },
+    { x: -1, y: 4, z: 0, color: color(49, 79, 228) },
+    { x: -1, y: 5, z: 1, color: color(255, 255, 255) },
+
+    
+    { x: -2, y: 2, z: 0, color: color(49, 79, 228) },
+    { x: -2, y: 3, z: 0, color: color(49, 79, 228) },
+    { x: -2, y: 4, z: 0, color: color(49, 79, 228) },
+    { x: -2, y: 5, z: 0, color: color(49, 79, 228) },
+    { x: -2, y: 5, z: 0, color: color(49, 79, 228) },
+    
+    { x: -4, y: 5, z: 0, color: color(49, 79, 228) },
+    { x: -3, y: 5, z: 0, color: color(49, 79, 228) },
+    { x: -2, y: 5, z: 0, color: color(49, 79, 228) },
+    { x: -2, y: 5, z: 0, color: color(49, 79, 228) },
+    
+    
+    
+
+  ];
 }
 
-// draw() function is called repeatedly, it's the main animation loop
 function draw() {
-    background(220);    
-    // call a method on the instance
-    myInstance.myMethod();
+  background(220);
 
-    // Put drawings here
-    var centerHorz = canvasContainer.width() / 2 - 125;
-    var centerVert = canvasContainer.height() / 2 - 125;
-    fill(234, 31, 81);
-    noStroke();
-    rect(centerHorz, centerVert, 250, 250);
-    fill(255);
-    textStyle(BOLD);
-    textSize(140);
-    text("p5*", centerHorz + 10, centerVert + 200);
+  // Zoom out the camera
+  translate(0, 0, -300);
+
+  rotateX(PI / 4);
+  rotateY(angle);
+  angle += 0.01;
+
+  if (isMousePressed) {
+    // Render each voxel with dynamic color
+    for (let i = 0; i < voxels.length; i++) {
+      let voxel = voxels[i];
+      let hue = map(sin(angle + i * 0.1), -1, 1, 0, 255);
+      let colorVal = color(hue, 200, 255);
+      fill(colorVal);
+      push();
+      translate(voxel.x * 40, voxel.y * 40, voxel.z * 40);
+      box(40);
+      pop();
+    }
+  } else {
+    // Render each voxel with its default color
+    for (let i = 0; i < voxels.length; i++) {
+      let voxel = voxels[i];
+      fill(voxel.color);
+      push();
+      translate(voxel.x * 40, voxel.y * 40, voxel.z * 40);
+      box(40);
+      pop();
+    }
+  }
 }
 
-// mousePressed() function is called once after every time a mouse button is pressed
 function mousePressed() {
-    // code to run when mouse is pressed
+  isMousePressed = true;
+}
+
+function mouseReleased() {
+  isMousePressed = false;
 }
