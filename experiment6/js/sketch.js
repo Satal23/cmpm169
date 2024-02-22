@@ -1,67 +1,57 @@
 // sketch.js - purpose and description here
-// Author: Your Name
-// Date:
+// Author: Atal Kakar
+// Date: 2/20/2024
 
 // Here is how you might set up an OOP p5.js project
 // Note that p5.js looks for a file called sketch.js
 
 // Constants - User-servicable parts
 // In a longer project I like to put these in a separate file
-const VALUE1 = 1;
-const VALUE2 = 2;
+let img;
 
-// Globals
-let myInstance;
-let canvasContainer;
-
-class MyClass {
-    constructor(param1, param2) {
-        this.property1 = param1;
-        this.property2 = param2;
-    }
-
-    myMethod() {
-        // code to run when method is called
-    }
+function preload() {
+  // Load an image
+  img = loadImage('https://as1.ftcdn.net/v2/jpg/02/95/94/94/1000_F_295949484_8BrlWkTrPXTYzgMn3UebDl1O13PcVNMU.jpg');
 }
 
-// setup() function is called once when the program starts
 function setup() {
-    // place our canvas, making it fit our container
-    canvasContainer = $("#canvas-container");
-    let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
-    canvas.parent("canvas-container");
-    // resize canvas is the page is resized
-    $(window).resize(function() {
-        console.log("Resizing...");
-        resizeCanvas(canvasContainer.width(), canvasContainer.height());
-    });
-    // create an instance of the class
-    myInstance = new MyClass(VALUE1, VALUE2);
+  createCanvas(img.width, img.height);
+  image(img, 0, 0); // Display the original image
+  loadPixels();
 
-    var centerHorz = windowWidth / 2;
-    var centerVert = windowHeight / 2;
-}
+  // each pixel in the image
+  for (let y = 0; y < img.height; y += 8) {
+    for (let x = 0; x < img.width; x += 6) {
+      let index = (x + y * img.width) * 4;
+      let r = pixels[index];
+      let g = pixels[index + 1];
+      let b = pixels[index + 2];
 
-// draw() function is called repeatedly, it's the main animation loop
-function draw() {
-    background(220);    
-    // call a method on the instance
-    myInstance.myMethod();
+      // Convert RGB values to brightness
+      let brightness = (r + g + b) / 3;
 
-    // Put drawings here
-    var centerHorz = canvasContainer.width() / 2 - 125;
-    var centerVert = canvasContainer.height() / 2 - 125;
-    fill(234, 31, 81);
-    noStroke();
-    rect(centerHorz, centerVert, 250, 250);
-    fill(255);
-    textStyle(BOLD);
-    textSize(140);
-    text("p5*", centerHorz + 10, centerVert + 200);
-}
+      // brightness to ASCII characters
+      let ascii = map(brightness, 0, 255, 0, 9);
+      let asciiChar = '';
 
-// mousePressed() function is called once after every time a mouse button is pressed
-function mousePressed() {
-    // code to run when mouse is pressed
+      // character based on brightness
+      switch (ascii) {
+        case 0:
+          asciiChar = ' ';
+          break;
+        case 1:
+          asciiChar = '.';
+          break;
+        case 2:
+          asciiChar = ':';
+          break;
+        default:
+          asciiChar = '#';
+          break;
+      }
+
+      fill(r, g, b);
+      text(asciiChar, x, y);
+    }
+  }
 }
